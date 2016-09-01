@@ -1,7 +1,12 @@
+# -*- coding: binary -*-
 require "rex/mime/version"
 
 module Rex
-  module Mime
-    # Your code goes here...
-  end
+module MIME
+
+require 'rex/mime/header'
+require 'rex/mime/part'
+require 'rex/mime/message'
+
+end
 end
