@@ -38,7 +38,7 @@ class Header
   end
 
   def find(idx)
-    if (idx.class == ::Fixnum)
+    if idx.kind_of?(Integer)
       return self.headers[idx]
     else
       self.headers.each do |pair|
@@ -61,7 +61,7 @@ class Header
   end
 
   def remove(idx)
-    if (idx.class == ::Fixnum)
+    if idx.kind_of?(Integer)
       self.headers.delete_at(idx)
     else
       self.headers.each_index do |i|
