@@ -6,8 +6,8 @@ require 'rex/mime/version'
 Gem::Specification.new do |spec|
   spec.name          = "rex-mime"
   spec.version       = Rex::Mime::VERSION
-  spec.authors       = ["dmohanty-r7"]
-  spec.email         = ["Dev_Mohanty@rapid7.com"]
+  spec.authors       = ['Metasploit Hackers']
+  spec.email         = ['msfdev@metasploit.com']
 
   spec.summary       = %q{This library is for creating and/or parsing MIME messages.}
   spec.description   = %q{This library is for creating and/or parsing MIME messages.}
@@ -20,7 +20,6 @@ Gem::Specification.new do |spec|
 
   spec.required_ruby_version = '>= 2.2.0'
 
-  spec.add_development_dependency "bundler"
   spec.add_development_dependency "rake"
   spec.add_development_dependency "rspec"
 
