@@ -48,7 +48,7 @@ RSpec.describe Rex::MIME::Message do
 
     it "creates a random bound" do
       message_class.send(:initialize)
-      expect(message_class.bound).to include('_Part_')
+      expect(message_class.bound).to include('---------------------------')
     end
 
     it "allows to populate headers from argument" do
@@ -349,40 +349,40 @@ RSpec.describe Rex::MIME::Message do
   describe "#to_s" do
     let(:regexp_mail) do
       regex = "MIME-Version: 1.0\r\n"
-      regex << "Content-Type: multipart/mixed; boundary=\"_Part_.*\"\r\n"
+      regex << "Content-Type: multipart/mixed; boundary=\"---------------------------.*\"\r\n"
       regex << "Subject: Pull Request\r\n"
       regex << "Date: .*\r\n"
       regex << "Message-ID: <.*@.*>\r\n"
       regex << "From: contributor@msfdev.int\r\n"
       regex << "To: msfdev@msfdev.int\r\n"
       regex << "\r\n"
-      regex << "--_Part_.*\r\n"
+      regex << "-----------------------------[0-9]{30}\r\n"
       regex << "Content-Disposition: inline\r\n"
       regex << "Content-Type: text/plain\r\n"
       regex << "Content-Transfer-Encoding: base64\r\n"
       regex << "\r\n"
       regex << "Q29udGVudHM=\r\n"
       regex << "\r\n"
-      regex << "--_Part_.*--\r\n"
+      regex << "-----------------------------[0-9]{30}--\r\n"
 
       Regexp.new(regex)
     end
 
     let(:regexp_web) do
-      regex = "--_Part_.*\r\n"
+      regex = "-----------------------------[0-9]{30}\r\n"
       regex << "Content-Disposition: form-data; name=\"action\"\r\n"
       regex << "\r\n"
       regex << "save\r\n"
-      regex << "--_Part_.*\r\n"
+      regex << "-----------------------------[0-9]{30}\r\n"
       regex << "Content-Disposition: form-data; name=\"file\"; filename=\"test.txt\"\r\n"
       regex << "Content-Type: application/octet-stream\r\n"
       regex << "\r\n"
       regex << "Contents\r\n"
-      regex << "--_Part_.*\r\n"
+      regex << "-----------------------------[0-9]{30}\r\n"
       regex << "Content-Disposition: form-data; name=\"title\"\r\n"
       regex << "\r\n"
       regex << "Title\r\n"
-      regex << "--_Part_.*--\r\n"
+      regex << "-----------------------------[0-9]{30}--\r\n"
 
       Regexp.new(regex)
     end
