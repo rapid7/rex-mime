@@ -16,9 +16,7 @@ class Message
   def initialize(data=nil)
     self.header = Rex::MIME::Header.new
     self.parts = []
-    random_bound = "#{rand(0xffffffff)}#{rand(0xffffffff)}#{rand(0xffffffff)}#{rand(0xffffffff)}"
-    random_bound = random_bound[0..29]
-    self.bound = "---------------------------#{random_bound}"
+    self.bound = "---------------------------#{Rex::Text::rand_text_numeric(30)}"
     self.content = ''
     if data
       head,body = data.split(/\r?\n\r?\n/, 2)
