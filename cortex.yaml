@@ -1,0 +1,15 @@
+---
+info:
+  title: Rex Mime
+  description: Rex Library for creating and/or parsing MIME messages
+  x-cortex-git:
+    github:
+      alias: r7org
+      repository: rapid7/rex-mime
+  x-cortex-tag: rex-mime
+  x-cortex-type: service
+  x-cortex-domain-parents:
+  - tag: metasploit
+openapi: 3.0.1
+servers:
+- url: "/"
