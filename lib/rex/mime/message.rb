@@ -26,7 +26,7 @@ class Message
 
       if ctype && ctype[1] && ctype[1] =~ /multipart\/mixed;\s*boundary="?([A-Za-z0-9'\(\)\+\_,\-\.\/:=\?^\s]+)"?/
         self.bound = $1
-        chunks = body.to_s.split(/--#{self.bound}(--)?\r?\n/)
+        chunks = body.to_s.split(/--#{self.bound}(--)?\r?\n?/)
         self.content = chunks.shift.to_s.gsub(/\s+$/, '')
         self.content << "\r\n" unless self.content.empty?
 
@@ -35,7 +35,7 @@ class Message
           head,body = chunk.split(/\r?\n\r?\n/, 2)
           part = Rex::MIME::Part.new
           part.header.parse(head)
-          part.content = body.gsub(/\s+$/, '')
+          part.content = body&.delete_suffix("\r\n")
           self.parts << part
         end
       else
