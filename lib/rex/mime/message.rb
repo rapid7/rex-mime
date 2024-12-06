@@ -23,7 +23,7 @@ class Message
 
       self.header.parse(head)
       ctype = self.header.find('Content-Type')
-      raise 'unexpected error'
+      # raise 'unexpected error'
 
       if ctype && ctype[1] && ctype[1] =~ /multipart\/mixed;\s*boundary="?([A-Za-z0-9'\(\)\+\_,\-\.\/:=\?^\s]+)"?/
         self.bound = $1
