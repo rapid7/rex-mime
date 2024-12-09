@@ -15,6 +15,32 @@ RSpec.describe Rex::MIME::Message do
       described_class.allocate
     end
 
+    let(:binary_junk) do
+      "\xBF^1\x00\v\xD9\xD3X\x8D:\xA1\xABS\xDD\xFA\xFBm\xE0\x8A\x96\xE6\x97\x8Aagfc\xAC\x98\xBEL\x1C\xDD\xAA'\xEA6s\r\x19V\xA6\xC0\x967\xFC\x8D\xF9\x9Et-\xAA\x14x\xB2\\\xEA\xF12u\xC3\xFB\xB6\x8A\xDB\xB3\x84\xB6}\x9A\x044K\x12T\tY\xEB\x83B\x8F.\x1D\xEF\xEC\xEE\xE6H]\x11W?\n\xAE\xE6\x94\xC7\xAF\xD9\x9E"
+    end
+
+    let(:binary_message) do
+      message = ''
+      message << "HTTP/1.1 200 OK\r\n"
+      message << "Content-Type: multipart/mixed; boundary=\"aAbBcCdDv1234567890VxXyYzZ\"\r\n"
+      message << "Server: Microsoft-IIS/10.0\r\n"
+      message << "Persistent-Auth: true\r\n"
+      message << "X-Powered-By: ASP.NET\r\n"
+      message << "Date: Thu, 05 Dec 2024 05:01:55 GMT\r\n"
+      message << "Content-Length: 4025\r\n"
+      message << "\r\n"
+      message << "--aAbBcCdDv1234567890VxXyYzZ\r\n"
+      message << "content-type: text/plain; charset=UTF-16\r\n\r\n"
+      message << "utf-16-encoded text\x00".encode('utf-16le').bytes.pack('C*')
+      message << "\r\n--aAbBcCdDv1234567890VxXyYzZ\r\n"
+      message << "content-type: application/octet-stream\r\n"
+      message << "\r\n"
+      message << binary_junk
+      message << "\r\n--aAbBcCdDv1234567890VxXyYzZ--"
+
+      message
+    end
+
     let(:raw_message) do
       message = "MIME-Version: 1.0\r\n"
       message << "Content-Type: multipart/mixed; boundary=\"_Part_12_3195573780_381739540\"\r\n"
@@ -50,6 +76,15 @@ RSpec.describe Rex::MIME::Message do
       message_class.send(:initialize)
       expect(message_class.bound).to include('---------------------------')
     end
+
+
+    it "populates binary parts correctly" do
+      message_class.send(:initialize, binary_message)
+      expect(message_class.parts.length).to eq(2)
+      expect(message_class.parts[0].content.force_encoding('utf-16le')).to eq("utf-16-encoded text\x00".encode('utf-16le'))
+      expect(message_class.parts[1].content).to eq(binary_junk)
+    end
+
 
     it "allows to populate headers from argument" do
       message_class.send(:initialize, raw_message)
@@ -105,7 +140,7 @@ RSpec.describe Rex::MIME::Message do
     it "allows to populate parts contents from argument" do
       message_class.send(:initialize, raw_message)
       part = message_class.parts[0]
-      expect(part.content).to eq("Q29udGVudHM=")
+      expect(part.content).to eq("Q29udGVudHM=\r\n")
     end
   end
 
